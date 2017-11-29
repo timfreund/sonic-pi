@@ -3,13 +3,6 @@
 #Fail script on first error encountered
 set -e
 
-UBUNTU_RELEASE=`lsb_release -rs`
-if [ ${UBUNTU_RELEASE} == "17.04" ]
-then
-    echo "Deferring to build-ubuntu-zesty-app"
-    exec `pwd`/build-ubuntu-zesty-app
-fi
-
 #Application/library versions built by this script.
 SUPERCOLLIDER_VERSION=3.8.0
 SC_PLUGINS_VERSION=${SUPERCOLLIDER_VERSION}
@@ -21,6 +14,13 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SP_APP_SRC=${SCRIPT_DIR}
 SP_ROOT=${SP_APP_SRC}/../../../../
 OSMID_DIR=${SP_APP_SRC}/../../server/native/linux/osmid
+
+UBUNTU_RELEASE=`lsb_release -rs`
+if [ ${UBUNTU_RELEASE} == "17.04" ]
+then
+    echo "Deferring to build-ubuntu-zesty-app"
+    exec ${SCRIPT_DIR}/build-ubuntu-zesty-app
+fi
 
 echo "This script has been tested on ubuntu 16.04, it should work on ubuntu 15.10."
 echo "14.04 users may need to install some of the dependencies by hand from source"
