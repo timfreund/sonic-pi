@@ -3,6 +3,13 @@
 #Fail script on first error encountered
 set -e
 
+UBUNTU_RELEASE=`lsb_release -rs`
+if [ ${UBUNTU_RELEASE} == "17.04" ]
+then
+    echo "Deferring to build-ubuntu-zesty-app"
+    exec `pwd`/build-ubuntu-zesty-app
+fi
+
 #Application/library versions built by this script.
 SUPERCOLLIDER_VERSION=3.8.0
 SC_PLUGINS_VERSION=${SUPERCOLLIDER_VERSION}
