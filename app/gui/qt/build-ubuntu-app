@@ -131,7 +131,7 @@ sudo ./waf install
 
 #Install osmid (for MIDI support)
 cd ${SRC_DIR}
-if [ -d ! osmid ]
+if [ ! -d osmid ]
 then
    git clone https://github.com/llloret/osmid.git
 fi
