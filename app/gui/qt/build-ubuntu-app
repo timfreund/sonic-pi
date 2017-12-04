@@ -10,16 +10,15 @@ AUBIO_VERSION=0.4.5
 OSMID_VERSION=391f35f789f18126003d2edf32902eb714726802
 
 #Internal definitions
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-SP_APP_SRC=${SCRIPT_DIR}
-SP_ROOT=${SP_APP_SRC}/../../../../
-OSMID_DIR=${SP_APP_SRC}/../../server/native/linux/osmid
+SP_QT_APP_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SRC_DIR=${SP_QT_APP_SRC_DIR}/../../../../
+OSMID_DIR=${SP_QT_APP_SRC_DIR}/../../server/native/linux/osmid
 
 UBUNTU_RELEASE=`lsb_release -rs`
 if [ ${UBUNTU_RELEASE} == "17.04" ]
 then
     echo "Deferring to build-ubuntu-zesty-app"
-    exec ${SCRIPT_DIR}/build-ubuntu-zesty-app
+    exec ${SP_QT_APP_SRC_DIR}/build-ubuntu-zesty-app
 fi
 
 echo "This script has been tested on ubuntu 16.04, it should work on ubuntu 15.10."
@@ -38,7 +37,7 @@ sudo apt-get install -y \
      curl python erlang-base
 
 ### IF YOU HAVE PROBLEMS WITH qwt
-#cd $SP_APP_SRC/../../../../
+#cd ${SRC_DIR}
 #wget 'http://downloads.sourceforge.net/project/qwt/qwt/6.1.2/qwt-6.1.2.tar.bz2'
 #tar -xf qwt-6.1.2.tar.bz2
 #cd qwt-6.1.2
@@ -48,7 +47,7 @@ sudo apt-get install -y \
 #sudo cp /usr/local/qwt-6.1.2/features/* /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/
 
 ### IF YOU HAVE PROBLEMS WITH qscintilla2
-#cd $SP_APP_SRC/../../../../
+#cd ${SRC_DIR}
 #wget 'http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-2.9.2/QScintilla_gpl-2.9.2.tar.gz'
 #tar -xf QScintilla_gpl-2.9.2.tar.gz
 #cd QScintilla_gpl-2.9.2/Qt4Qt5/
@@ -56,8 +55,7 @@ sudo apt-get install -y \
 #make
 #sudo make install
 
-#Build supercollider from source
-cd ${SP_ROOT}
+cd ${SRC_DIR}
 git clone https://github.com/supercollider/supercollider.git || true
 cd supercollider
 git checkout Version-${SUPERCOLLIDER_VERSION}
@@ -70,7 +68,7 @@ sudo make install
 #This should install to /usr/local/
 
 #Build sc3 plugins and install to /usr/local/ so supercollider can find them
-cd ${SP_ROOT}
+cd ${SRC_DIR}
 git clone https://github.com/supercollider/sc3-plugins.git || true
 cd sc3-plugins
 git checkout Version-${SC_PLUGINS_VERSION}
@@ -83,7 +81,7 @@ make
 sudo make install
 
 #Install libaubio (apt-get version is too old)
-cd ${SP_ROOT}
+cd ${SRC_DIR}
 git clone https://git.aubio.org/git/aubio/ || true
 cd aubio
 git checkout ${AUBIO_VERSION}
@@ -93,7 +91,7 @@ make getwaf
 sudo ./waf install
 
 #Install osmid (for MIDI support)
-cd ${SP_ROOT}
+cd ${SRC_DIR}
 git clone https://github.com/llloret/osmid.git || true
 cd osmid
 git checkout ${OSMID_VERSION}
@@ -105,12 +103,12 @@ mkdir -p ${OSMID_DIR}
 install m2o o2m -t ${OSMID_DIR}
 
 #Build Erlang files
-cd ${SP_APP_SRC}/../../server/erlang
+cd ${SP_QT_APP_SRC_DIR}/../../server/erlang
 erlc osc.erl
 erlc pi_server.erl
 
 #Build sonic-pi server extensions, documentation, and binary.
-cd ${SP_APP_SRC}
+cd ${SP_QT_APP_SRC_DIR}
 ../../server/bin/compile-extensions.rb
 ../../server/bin/i18n-tool.rb -t
 cp -f ruby_help.tmpl ruby_help.h
